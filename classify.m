@@ -2,7 +2,7 @@
 Path = fullfile("containerx3\");
 imds = imageDatastore(Path,IncludeSubfolders=true,LabelSource="foldernames");
 
-[imdsTrain,imdsValidation] = splitEachLabel(imds,0.7,'randomized');
+[imdsTrain,imdsValidation] = splitEachLabel(imds,200,'randomized');
 
 
 %%
@@ -35,17 +35,3 @@ newNet = trainNetwork(augimdsTrain,lgraph,options);
 %%
 [YPred,probs] = classify(newNet,augimdsValidation);
 accuracy = mean(YPred == imdsValidation.Labels);
-
-confMat = confusionmat(YPred,imdsValidation.Labels);
-
-% And view individual images
-
-% idx = randperm(numel(imdsValidation.Files),4);
-% figure
-% for i = 1:4
-%     subplot(2,2,i)
-%     I = readimage(imdsValidation,idx(i));
-%     imshow(I)
-%     label = YPred(idx(i));
-%     title(string(label) + ", " + num2str(100*max(probs(idx(i),:)),3) + "%");
-% end
